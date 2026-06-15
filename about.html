@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="manifest" href="/images/site.webmanifest">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://betonkyoto.com/about">
+  <meta property="og:title" content="BE/TON — About">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:image" content="/images/og.png">
+  <meta property="og:description" content="Concrete objects. Kyoto.">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About — BE/TON</title>
+  <meta name="description" content="BE/TON — Handmade concrete objects from Kyoto, Japan." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Inline+Text:wght@300;500;700;900&family=Inter:wght@200;300;400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/beton.css" />
+  <style>
+    /* Full bleed hero — image fills entire viewport */
+    .about-hero {
+      position: relative;
+      min-height: 90vh;
+      overflow: hidden;
+      border-bottom: 0.5px solid var(--black-border);
+    }
+    .about-hero-bg {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+    }
+    .about-hero-bg img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 30%;
+      filter: grayscale(100%) contrast(1.05) brightness(0.35);
+      display: block;
+    }
+    /* Subtle gradient — darker at bottom where text lives */
+    .about-hero-bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to bottom,
+        rgba(0,0,0,0.1) 0%,
+        rgba(0,0,0,0.3) 40%,
+        rgba(0,0,0,0.65) 100%
+      );
+    }
+
+    /* Text sits over the image, aligned bottom-left */
+    .about-content {
+      position: relative;
+      z-index: 1;
+      padding: 5rem 2.5rem 3.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      min-height: 90vh;
+    }
+    .about-logo {
+      font-family: 'Big Shoulders Inline Text', sans-serif;
+      /* Match street-title on homepage: clamp(38px, 5.4vw, 77px) */
+      font-size: clamp(38px, 5.4vw, 77px);
+      letter-spacing: 4px;
+      color: var(--white);
+      line-height: 1;
+      margin-bottom: 2rem;
+    }
+    .about-text {
+      max-width: 460px;
+      display: flex;
+      flex-direction: column;
+      gap: 1.4rem;
+    }
+    .about-line {
+      /* Match street-sub on homepage: 18px desktop */
+      font-size: 18px;
+      color: var(--white-dim);
+      line-height: 1.85;
+      letter-spacing: var(--ls-tight);
+      font-weight: 200;
+    }
+    .about-line.prominent {
+      font-family: 'Inter', sans-serif;
+      font-weight: 300;
+      font-size: clamp(16px, 2vw, 22px);
+      color: var(--white);
+      letter-spacing: 0.5px;
+      line-height: 1.2;
+    }
+    .about-line.closing {
+      font-size: 13px;
+      color: var(--white-muted);
+      letter-spacing: var(--ls-tight);
+      line-height: 2;
+    }
+    .about-sign {
+      font-family: 'Inter', sans-serif;
+      font-weight: 200;
+      font-size: var(--text-nav);
+      letter-spacing: var(--ls-wide);
+      color: var(--red);
+      margin-top: 0.25rem;
+    }
+
+    /* Closing strip */
+    .about-closing {
+      padding: 4rem 2.5rem;
+      border-bottom: 0.5px solid var(--black-border);
+    }
+    .about-closing-text {
+      font-family: 'Big Shoulders Inline Text', sans-serif;
+      font-size: var(--text-h3);
+      letter-spacing: var(--ls-normal);
+      line-height: 1.2;
+      color: var(--white);
+    }
+    .about-closing-sub {
+      font-size: var(--text-nav);
+      letter-spacing: var(--ls-normal);
+      color: var(--red);
+      margin-top: 1rem;
+    }
+
+    @media (max-width: 768px) {
+      .about-content { padding: 6rem 1.5rem 3.5rem; min-height: 90vh; }
+      .about-logo { font-size: 36px; margin-bottom: 1.5rem; }
+      .about-text { max-width: 100%; }
+      .about-line.prominent { font-size: 16px; }
+      .about-closing { padding: 3rem 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="betonNav"></div>
+
+<div class="about-hero">
+  <!-- Full bleed background image -->
+  <div class="about-hero-bg">
+    <img src="/images/strata-top.png" alt="BE/TON concrete object" loading="eager" />
+  </div>
+
+  <!-- Text over image — only as wide as content -->
+  <div class="about-content">
+    <div class="about-logo">BE/TON</div>
+    <div class="about-text">
+
+      <div class="about-line prominent">
+        <span data-lang="en">The world got lighter.<br>We didn't.</span>
+        <span data-lang="jp">世界は軽くなった。<br>私たちは逆。</span>
+      </div>
+
+      <div class="about-line">
+        <span data-lang="en">Concrete is not a compromise.<br>It is the starting point.</span>
+        <span data-lang="jp">コンクリートは妥協ではない。<br>それが出発点だ。</span>
+      </div>
+
+      <div class="about-line">
+        <span data-lang="en">Most objects are designed first, then a material is chosen. We work the opposite way — concrete comes first. The design grows from what it can and cannot do. That limitation is the creativity.</span>
+        <span data-lang="jp">多くのものはまずデザインされ、それから素材が選ばれる。私たちは逆だ。コンクリートが先にある。デザインは、その素材にできることとできないことの中から生まれる。その制約が、創造性になる。</span>
+      </div>
+
+      <div class="about-line">
+        <span data-lang="en">Craftsmanship is disappearing. Not because people stopped caring — because the difficult path stopped being chosen. We chose it anyway.</span>
+        <span data-lang="jp">職人技は消えつつある。困難な道が選ばれなくなったからだ。それでも、私たちはその道を選んだ。</span>
+      </div>
+
+      <div class="about-line closing">
+        <span data-lang="en">One studio. Kyoto. 2026.<br>No factory. No template. No reproduction.<br>Each object is a new question asked to the same material.</span>
+        <span data-lang="jp">ひとつのスタジオ。京都。2026年。<br>工場なし。テンプレートなし。複製なし。<br>すべての作品は、同じ素材への新しい問いだ。</span>
+      </div>
+
+      <div class="about-sign">— 京都</div>
+    </div>
+  </div>
+</div>
+
+<div class="about-closing fade-up">
+  <div class="about-closing-text">
+    <span data-lang="en">HEAVY BY CHOICE.<br>LIGHT ON EXPLANATION.</span>
+    <span data-lang="jp">重さは意図的。<br>説明は不要。</span>
+  </div>
+  <div class="about-closing-sub">BE/TON — 京都</div>
+</div>
+
+<div id="betonFooter"></div>
+
+<script src="/js/beton.js"></script>
+<script defer src="/_vercel/speed-insights/script.js"></script>
+</body>
+</html>

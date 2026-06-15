@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="manifest" href="/images/site.webmanifest">
+  <meta property="og:type" content="product">
+  <meta property="og:url" content="https://betonkyoto.com/products/strata">
+  <meta property="og:title" content="STRATA — BE/TON Kyoto">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:image" content="/images/og.png">
+  <meta property="og:description" content="GOOD TASTE IS HEAVY.">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>STRATA — BE/TON Kyoto</title>
+  <meta name="description" content="STRATA — Concrete object. Handmade in Kyoto." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@300;500;700;900&family=Big+Shoulders+Inline+Text:wght@300;500;700;900&family=Inter:wght@200;300;400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/beton.css" />
+  <style>
+    body {
+      background-color: var(--black);
+    }
+
+    .product-back { padding: 1.2rem 2.5rem; border-bottom: 0.5px solid var(--black-border); }
+    .product-back a { font-size: var(--text-nav); letter-spacing: var(--ls-normal); color: var(--white-muted); transition: color 0.2s; }
+    .product-back a:hover { color: var(--red); }
+
+    /* ── DESKTOP: thumb strip | main image | info ── */
+    .product-hero {
+      display: grid;
+      grid-template-columns: 80px 1fr 1fr;
+      border-bottom: 0.5px solid var(--black-border);
+    }
+
+    /* Wrap holds image + dots together */
+    .product-imgs-wrap {
+      border-right: 0.5px solid var(--black-border);
+      /* sticky only on desktop — mobile overrides below */
+      position: sticky;
+      top: 60px;
+      height: calc(100vh - 60px);
+      display: flex;
+      flex-direction: column;
+    }
+    .product-imgs {
+      flex: 1;
+      overflow: hidden;
+      position: relative;
+    }
+    #mainImg {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center center;
+      filter: grayscale(100%) contrast(1.1);
+      transition: opacity 0.25s ease;
+      display: block;
+    }
+
+    /* Thumb strip */
+    .product-thumbs {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      padding: 0.75rem;
+      border-right: 0.5px solid var(--black-border);
+      position: sticky;
+      top: 60px;
+      width: 72px;
+      align-self: start;
+    }
+    .thumb {
+      width: 52px;
+      height: 52px;
+      cursor: pointer;
+      opacity: 0.35;
+      transition: opacity 0.2s;
+      overflow: hidden;
+      flex-shrink: 0;
+      border: 0.5px solid transparent;
+    }
+    .thumb:hover { opacity: 0.7; }
+    .thumb.active { opacity: 1; border-color: var(--white-faint); }
+    .thumb img { width: 100%; height: 100%; object-fit: cover; object-position: center; filter: grayscale(100%); display: block; }
+
+    /* Info panel */
+    .product-info {
+      padding: 3rem 2.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.4rem;
+    }
+    .product-tag { font-size: var(--text-xs); letter-spacing: var(--ls-wide); color: var(--white-muted); }
+    .product-name { font-family: 'Big Shoulders Inline Text', sans-serif; font-size: var(--text-h2); letter-spacing: var(--ls-normal); line-height: 1; color: var(--white); }
+    .product-price { font-size: var(--text-price); letter-spacing: var(--ls-normal); color: var(--white); font-weight: 200; }
+    .product-desc { font-size: var(--text-sm); color: var(--white-muted); line-height: var(--lh-body); letter-spacing: var(--ls-tight); }
+
+    /* Specs */
+    .product-specs { display: flex; flex-direction: column; gap: 0.65rem; border-top: 0.5px solid var(--black-border-strong); border-bottom: 0.5px solid var(--black-border-strong); padding: 1.2rem 0; }
+    .spec-row { display: flex; justify-content: space-between; font-size: var(--text-sm); letter-spacing: var(--ls-tight); }
+    .spec-row span:first-child { color: var(--white-muted); }
+    .spec-row span:last-child { color: var(--white-dim); }
+
+    /* Qty */
+    .qty-selector { display: flex; align-items: center; gap: 1.2rem; }
+    .qty-label { font-size: var(--text-xs); letter-spacing: var(--ls-normal); color: var(--white-muted); }
+    .qty-controls { display: flex; align-items: center; gap: 0.8rem; }
+    .qty-selector-btn { background: transparent; border: 0.5px solid var(--black-border-strong); color: var(--white-dim); width: 28px; height: 28px; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; font-family: 'Inter', sans-serif; line-height: 1; }
+    .qty-selector-btn:hover { border-color: var(--red); color: var(--red); }
+    .qty-display { font-size: var(--text-sm); color: var(--white); min-width: 20px; text-align: center; letter-spacing: var(--ls-tight); }
+
+    /* Buttons */
+    .add-btn { padding: 1rem 2rem; background: var(--white); color: var(--black); font-size: var(--text-nav); letter-spacing: var(--ls-normal); cursor: pointer; border: none; font-family: 'Inter', sans-serif; font-weight: 300; transition: background 0.2s, color 0.2s; width: 100%; }
+    .add-btn:hover:not(:disabled) { background: var(--red); color: var(--white); }
+    .add-btn:disabled { background: var(--black-border-strong); color: var(--white-faint); cursor: not-allowed; }
+
+    .sold-out-note { font-size: var(--text-xs); letter-spacing: var(--ls-normal); color: var(--white-muted); text-align: center; }
+    .sold-out-note a { color: var(--white-dim); border-bottom: 0.5px solid var(--white-faint); transition: color 0.2s; }
+    .sold-out-note a:hover { color: var(--red); }
+    .shipping-note { font-size: var(--text-sm); color: var(--white-muted); letter-spacing: var(--ls-tight); line-height: var(--lh-body); }
+    .bulk-note { font-size: var(--text-sm); color: var(--white-faint); letter-spacing: var(--ls-tight); margin-top: 0.5rem; }
+    .bulk-note a { color: var(--red); text-decoration: none; }
+    .bulk-note a:hover { text-decoration: underline; }
+
+    /* Uses section — no label, no gap */
+    .uses-grid { display: grid; grid-template-columns: 1fr 1fr; border-top: 0.5px solid var(--black-border); border-bottom: 0.5px solid var(--black-border); }
+    .use-card { border-right: 0.5px solid var(--black-border); display: flex; flex-direction: column; }
+    .use-card:last-child { border-right: none; }
+    .use-img { background: var(--black); overflow: hidden; height: 360px; }
+    .use-img img { width: 100%; height: 100%; object-fit: cover; object-position: center center; filter: grayscale(50%) contrast(1.1); display: block; }
+    .use-info { padding: 1.5rem 2rem; border-top: 0.5px solid var(--black-border); display: flex; flex-direction: column; gap: 0.4rem; }
+    .use-num { font-size: var(--text-xs); letter-spacing: var(--ls-normal); color: var(--red); opacity: 0.7; }
+    .use-title { font-size: var(--text-nav); letter-spacing: var(--ls-normal); color: var(--white-dim); }
+    .use-desc { font-size: var(--text-sm); color: var(--white-muted); letter-spacing: var(--ls-tight); line-height: 1.8; margin-top: 0.3rem; }
+
+    /* Desktop: hide mobile slides */
+    .product-imgs .slide { display: none; }
+    .swipe-dots { display: none; }
+
+    /* Swipe dots — mobile only */
+    .swipe-dots {
+      display: none;
+      justify-content: center;
+      gap: 6px;
+      padding: 0.8rem 0;
+      background: var(--black);
+    }
+    .swipe-dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--white-faint);
+      transition: background 0.2s;
+    }
+    .swipe-dot.active { background: var(--white-dim); }
+
+    /* ── MOBILE ── */
+    @media (max-width: 768px) {
+      .product-back { padding: 1rem 1.5rem; }
+      .product-hero { grid-template-columns: 1fr; border-bottom: none; }
+      .product-thumbs { display: none; }
+
+      /* Critical: remove sticky on mobile — prevents scroll instability */
+      .product-imgs-wrap {
+        position: static;
+        height: auto;
+        border-right: none;
+      }
+      .product-imgs {
+        height: 72vw;
+        min-height: 280px;
+        max-height: 420px;
+        touch-action: pan-y;
+      }
+      #mainImg { display: none; }
+      .product-imgs .slide {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        display: block;
+      }
+      .product-imgs .slide.active { opacity: 1; }
+      .product-imgs .slide img {
+        width: 100%; height: 100%;
+        object-fit: cover;
+        filter: grayscale(100%) contrast(1.1);
+        display: block;
+      }
+      .swipe-dots { display: flex; border-bottom: 0.5px solid var(--black-border); }
+      .product-name { font-size: 38px; }
+      .product-info { padding: 2rem 1.5rem; border-bottom: 0.5px solid var(--black-border); }
+      .uses-grid { grid-template-columns: 1fr; }
+      .use-card { border-right: none; border-bottom: 0.5px solid var(--black-border); }
+      .use-card:last-child { border-bottom: none; }
+      .use-img { height: 280px; }
+    }
+
+    /* ── TOPO DIVIDER ── */
+    .topo-divider {
+      position: relative;
+      width: 100%;
+      height: 40vh;
+      min-height: 240px;
+      overflow: hidden;
+      border-top: 0.5px solid var(--black-border);
+      border-bottom: 0.5px solid var(--black-border);
+    }
+    .topo-divider img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      object-position: center 40%;
+      display: block;
+      opacity: 0.7;
+      filter: brightness(0.6);
+    }
+    .topo-divider-caption {
+      position: absolute;
+      bottom: 2rem; right: 2.5rem;
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      letter-spacing: 4px;
+      color: var(--white-faint);
+      font-weight: 300;
+      text-transform: uppercase;
+      text-align: right;
+    }
+    @media (max-width: 768px) {
+      .topo-divider { height: 32vh; min-height: 180px; }
+      .topo-divider-caption { bottom: 1.25rem; right: 1.5rem; font-size: 10px; letter-spacing: 3px; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="betonNav"></div>
+
+<div class="product-back">
+  <a href="/shop">← SHOP</a>
+</div>
+
+<div class="product-hero">
+
+  <!-- Thumb strip (desktop only) -->
+  <div class="product-thumbs" id="thumbStrip">
+    <div class="thumb active" onclick="switchImg('/images/strata-45.png', this)">
+      <img src="/images/strata-45.png" loading="lazy" alt="45 view" />
+    </div>
+    <div class="thumb" onclick="switchImg('/images/strata-top.png', this)">
+      <img src="/images/strata-top.png" loading="lazy" alt="top view" />
+    </div>
+    <div class="thumb" onclick="switchImg('/images/strata-side.png', this)">
+      <img src="/images/strata-side.png" loading="lazy" alt="side view" />
+    </div>
+  </div>
+
+  <!-- Main image panel (desktop) / Swipeable slides (mobile) -->
+  <div class="product-imgs-wrap">
+    <div class="product-imgs" id="productImgs">
+      <!-- Desktop: single switching image -->
+      <img id="mainImg" src="/images/strata-45.png" alt="STRATA concrete ashtray" loading="eager" />
+      <!-- Mobile: slides -->
+      <div class="slide active"><img src="/images/strata-45.png" alt="STRATA" loading="eager" /></div>
+      <div class="slide"><img src="/images/strata-top.png" alt="STRATA top" loading="lazy" /></div>
+      <div class="slide"><img src="/images/strata-side.png" alt="STRATA side" loading="lazy" /></div>
+    </div>
+    <!-- Dots sit directly below image, hidden on desktop -->
+    <div class="swipe-dots" id="swipeDots">
+      <div class="swipe-dot active"></div>
+      <div class="swipe-dot"></div>
+      <div class="swipe-dot"></div>
+    </div>
+  </div>
+
+  <!-- Info -->
+  <div class="product-info">
+    <div class="product-name">STRATA</div>
+    <div class="product-price">¥26,000</div>
+    <div class="product-desc">
+      <span data-lang="en">Concrete ashtray. Hand-poured in Kyoto. Each piece is unique.</span>
+      <span data-lang="jp">コンクリート灰皿。京都で手作り。一点一点異なる表情を持つ。</span>
+    </div>
+
+    <div class="product-specs">
+      <div class="spec-row">
+        <span data-lang="en">MATERIAL</span><span data-lang="jp">素材</span>
+        <span data-lang="en">Handcast concrete</span><span data-lang="jp">コンクリート</span>
+      </div>
+      <div class="spec-row">
+        <span data-lang="en">DIMENSIONS</span><span data-lang="jp">サイズ</span>
+        <span>∅130mm × 33mm</span>
+      </div>
+      <div class="spec-row">
+        <span data-lang="en">WEIGHT</span><span data-lang="jp">重量</span>
+        <span data-lang="en">approx. 480g</span><span data-lang="jp">約480g</span>
+      </div>
+      <div class="spec-row">
+        <span data-lang="en">ORIGIN</span><span data-lang="jp">原産地</span>
+        <span data-lang="en">Kyoto, Japan</span><span data-lang="jp">京都</span>
+      </div>
+      <div class="spec-row">
+        <span data-lang="en">FINISH</span><span data-lang="jp">仕上げ</span>
+        <span data-lang="en">Matte, hand-sanded</span><span data-lang="jp">マット、手研磨</span>
+      </div>
+    </div>
+    <div class="qty-selector" id="qtySection">
+      <div class="qty-label">
+        <span data-lang="en">QTY</span>
+        <span data-lang="jp">数量</span>
+      </div>
+      <div class="qty-controls">
+        <button class="qty-selector-btn" onclick="changeQty(-1)">−</button>
+        <div class="qty-display" id="qtyNum">1</div>
+        <button class="qty-selector-btn" onclick="changeQty(1)">+</button>
+      </div>
+    </div>
+    <button class="add-btn" id="addBtn" onclick="addToCart('strata')">
+      <span data-lang="en">ADD TO CART</span>
+      <span data-lang="jp">カートに追加</span>
+    </button>
+    <div id="soldOutNote" class="sold-out-note" style="display:none">
+      <span data-lang="en">Sold out — follow <a href="https://instagram.com/betonkyoto" target="_blank">@betonkyoto</a> for next drop.</span>
+      <span data-lang="jp">完売 — 次回入荷は <a href="https://instagram.com/betonkyoto" target="_blank">@betonkyoto</a> をフォロー。</span>
+    </div>
+    <div class="shipping-note">
+      <span data-lang="en">Free shipping in Japan · ¥3,500 international</span>
+      <span data-lang="jp">日本国内送料無料・国際配送 ¥3,500</span>
+    </div>
+    <div class="bulk-note">
+      <span data-lang="en">For bulk or studio orders — <a href="mailto:beton.kyoto@proton.me">contact us</a></span>
+      <span data-lang="jp">まとめ注文・スタジオ向けは — <a href="mailto:beton.kyoto@proton.me">お問い合わせ</a></span>
+    </div>
+  </div>
+</div>
+
+<!-- TOPO DIVIDER — the map that became the object -->
+<div class="topo-divider fade-up">
+  <img src="/images/topo-strata-divider.png" alt="Topographic map — the form behind STRATA" loading="lazy" />
+  <div class="topo-divider-caption">
+    <span data-lang="en">The form comes from the land.</span>
+    <span data-lang="jp">形は大地から生まれる。</span>
+  </div>
+</div>
+
+<div class="uses-grid">
+  <div class="use-card fade-up">
+    <div class="use-img">
+      <img src="/images/strata-cigarette.png" alt="Ashtray" loading="lazy" />
+    </div>
+    <div class="use-info">
+      <div class="use-num">01</div>
+      <div class="use-title">
+        <span data-lang="en">ASHTRAY</span>
+        <span data-lang="jp">灰皿</span>
+      </div>
+      <div class="use-desc">
+        <span data-lang="en">The primary purpose. The terrain holds ash naturally. Heavy enough to stay put.</span>
+        <span data-lang="jp">主な用途。地形が灰を自然に受け止める。重さで安定。</span>
+      </div>
+    </div>
+  </div>
+  <div class="use-card fade-up">
+    <div class="use-img">
+      <img src="/images/strata-keys.png" alt="Key tray" loading="lazy" />
+    </div>
+    <div class="use-info">
+      <div class="use-num">02</div>
+      <div class="use-title">
+        <span data-lang="en">KEY TRAY</span>
+        <span data-lang="jp">キートレイ</span>
+      </div>
+      <div class="use-desc">
+        <span data-lang="en">For those who don't smoke. Keys, wallet, whatever you empty from your pockets.</span>
+        <span data-lang="jp">喫煙しない方に。鍵、財布、ポケットの中身をまとめて。</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="betonFooter"></div>
+
+<script src="/js/beton.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // ── MOBILE SWIPE ──────────────────────────────────────────
+    const container = document.getElementById('productImgs');
+    const slides = container.querySelectorAll('.slide');
+    const dots = document.querySelectorAll('.swipe-dot');
+    let current = 0;
+    let startX = 0;
+
+    function goTo(index) {
+      if (!slides.length) return;
+      slides[current].classList.remove('active');
+      dots[current]?.classList.remove('active');
+      current = (index + slides.length) % slides.length;
+      slides[current].classList.add('active');
+      dots[current]?.classList.add('active');
+    }
+
+    container.addEventListener('touchstart', e => {
+      startX = e.touches[0].clientX;
+    }, { passive: true });
+
+    container.addEventListener('touchend', e => {
+      const diff = startX - e.changedTouches[0].clientX;
+      if (Math.abs(diff) > 40) goTo(diff > 0 ? current + 1 : current - 1);
+    }, { passive: true });
+  });
+</script>
+<script defer src="/_vercel/speed-insights/script.js"></script>
+</body>
+</html>

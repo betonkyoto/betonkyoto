@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="manifest" href="/images/site.webmanifest">
+  <meta property="og:title" content="BE/TON — Kyoto">
+  <meta property="og:image" content="/images/og.png">
+  <meta property="og:description" content="GOOD TASTE IS HEAVY.">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>404 — BE/TON Kyoto</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@300;500;700;900&family=Big+Shoulders+Inline+Text:wght@300;500;700;900&family=Inter:wght@200;300;400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/beton.css" />
+  <style>
+    .not-found-wrap {
+      min-height: calc(100vh - 160px);
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 4rem 2.5rem;
+    }
+
+```
+.not-found-inner {
+  display: grid;
+  place-items: center;
+}
+
+/* both children share the same grid cell, stacking on top of each other */
+.not-found-inner > * {
+  grid-area: 1 / 1;
+}
+
+.not-found-bg {
+  font-family: 'Big Shoulders Inline Text', sans-serif;
+  font-weight: 900;
+  font-size: clamp(200px, 45vw, 420px);
+  color: #1c1c1c;
+  line-height: 1;
+  user-select: none;
+  letter-spacing: -4px;
+  pointer-events: none;
+  white-space: nowrap;
+  z-index: 1;
+}
+
+.not-found-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.not-found-label {
+  font-size: var(--text-xs);
+  letter-spacing: var(--ls-wide);
+  color: var(--white-faint);
+}
+
+.not-found-title {
+  font-family: 'Big Shoulders Inline Text', sans-serif;
+  font-size: clamp(42px, 10vw, 80px);
+  letter-spacing: 2px;
+  line-height: 1;
+  color: var(--white);
+}
+
+.not-found-sub {
+  font-size: var(--text-xs);
+  letter-spacing: var(--ls-normal);
+  color: red;
+}
+
+.not-found-jp {
+  font-size: var(--text-xs);
+  letter-spacing: var(--ls-normal);
+  color: var(--white-faint);
+  margin-top: -0.5rem;
+}
+
+.not-found-divider {
+  width: 0.5px;
+  height: 48px;
+  background: var(--black-border-strong);
+}
+
+.not-found-back {
+  font-size: var(--text-nav);
+  letter-spacing: var(--ls-normal);
+  color: var(--white-dim);
+  text-decoration: none;
+  border-bottom: 0.5px solid var(--white-faint);
+  padding-bottom: 2px;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.not-found-back:hover {
+  color: var(--red);
+  border-color: var(--red);
+}
+
+@media (max-width: 768px) {
+  .not-found-wrap { padding: 3rem 1.5rem; }
+}
+```
+
+  </style>
+</head>
+<body>
+
+<!-- ANNOUNCE BAR -->
+
+<div id="betonNav"></div>
+
+<div class="not-found-wrap">
+  <div class="not-found-inner">
+    <div class="not-found-bg">404</div>
+    <div class="not-found-content">
+      <span class="not-found-label">ERROR 404</span>
+      <h1 class="not-found-title">
+        <span data-lang="en">THIS OBJECT<br>DOESN'T EXIST.</span>
+        <span data-lang="jp">このページは<br>存在しません。</span>
+      </h1>
+      <p class="not-found-sub">
+        <span data-lang="en">SOME THINGS ARE JUST TOO HEAVY TO BE FOUND.</span>
+        <span data-lang="jp">重すぎて、見つからないものもある。</span>
+      </p>
+      <div class="not-found-divider"></div>
+      <a href="/" class="not-found-back">
+        <span data-lang="en">← RETURN TO HOME</span>
+        <span data-lang="jp">← ホームへ戻る</span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<div id="betonFooter"></div>
+
+<script src="/js/beton.js"></script>
+
+<script defer src="/_vercel/speed-insights/script.js"></script>
+</body>
+</html>

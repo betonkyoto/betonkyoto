@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="manifest" href="/images/site.webmanifest">
+  <meta property="og:title" content="BE/TON — Kyoto">
+  <meta property="og:image" content="/images/og.png">
+  <meta property="og:description" content="GOOD TASTE IS HEAVY.">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Coming Soon — BE/TON Kyoto</title>
+  <meta name="description" content="BE/TON — Something heavy is coming." />
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="manifest" href="/images/site.webmanifest">
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@300;500;700;900&family=Big+Shoulders+Inline+Text:wght@300;500;700;900&family=Inter:wght@200;300;400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/beton.css" />
+  <style>
+    .coming-back {
+      padding: 1.2rem 2.5rem;
+      border-bottom: 0.5px solid var(--black-border);
+    }
+    .coming-back a {
+      font-size: var(--text-nav);
+      letter-spacing: var(--ls-normal);
+      color: var(--white-muted);
+      transition: color 0.2s;
+    }
+    .coming-back a:hover { color: var(--red); }
+
+    .coming-page {
+      min-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+      padding: 4rem 2rem;
+      text-align: center;
+      border-bottom: 0.5px solid var(--black-border);
+    }
+    .coming-object-label {
+      font-size: var(--text-nav);
+      letter-spacing: var(--ls-wide);
+      color: var(--white-muted);
+    }
+    .coming-title {
+      font-family: 'Big Shoulders Inline Text', sans-serif;
+      font-size: var(--text-h2);
+      letter-spacing: var(--ls-normal);
+      color: var(--white);
+      line-height: 1;
+    }
+    .coming-kyoto {
+      font-family: 'Inter', sans-serif; font-weight: 700;
+      font-size: var(--text-h3);
+      letter-spacing: var(--ls-wide);
+      color: var(--red);
+    }
+    .coming-sub {
+      font-size: var(--text-sm);
+      letter-spacing: var(--ls-normal);
+      color: var(--white-muted);
+      line-height: var(--lh-body);
+    }
+    .coming-sub a {
+      color: var(--white-dim);
+      border-bottom: 0.5px solid var(--white-faint);
+      padding-bottom: 0.1rem;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .coming-sub a:hover { color: var(--red); border-color: var(--red); }
+
+    @media (max-width: 768px) {
+      .coming-back { padding: 1rem 1.5rem; }
+      .coming-title { font-size: 36px; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="betonNav"></div>
+
+<div class="coming-back">
+  <a href="/shop.html">← SHOP</a>
+</div>
+
+<div class="coming-page">
+  <div class="coming-object-label" id="objectLabel">OBJECT 00X</div>
+  <div class="coming-title">
+    <span data-lang="en">SOMETHING<br>HEAVY<br>IS COMING.</span>
+    <span data-lang="jp">もうすぐ<br>重くなる</span>
+  </div>
+  <div class="coming-kyoto">京都</div>
+  <div class="coming-sub">
+    <span data-lang="en">
+      Follow <a href="https://instagram.com/betonkyoto" target="_blank" rel="noopener">@betonkyoto</a> for updates.
+    </span>
+    <span data-lang="jp">
+      <a href="https://instagram.com/betonkyoto" target="_blank" rel="noopener">@betonkyoto</a> を。
+    </span>
+  </div>
+</div>
+
+<div id="betonFooter"></div>
+
+<script src="/js/beton.js"></script>
+<script>
+  // Read ?product= from URL and update label
+  const params = new URLSearchParams(window.location.search);
+  const num = params.get('product') || '00X';
+  const label = document.getElementById('objectLabel');
+  if (label) {
+    label.textContent = `OBJECT ${num}`;
+    document.title = `OBJECT ${num} — BE/TON Kyoto`;
+  }
+</script>
+<script defer src="/_vercel/speed-insights/script.js"></script>
+</body>
+</html>

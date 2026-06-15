@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="manifest" href="/images/site.webmanifest">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://betonkyoto.com/">
+  <meta property="og:title" content="BE/TON — Kyoto">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:image" content="/images/og.png">
+  <meta property="og:description" content="BE/TON Studio — Handcast objects from Kyoto, Japan. STRATA available now.">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BE/TON — Kyoto</title>
+  <meta name="description" content="BE/TON Studio — Handcast objects from Kyoto, Japan. STRATA available now." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@300;500;700;900&family=Big+Shoulders+Inline+Text:wght@300;500;700;900&family=Inter:wght@200;300;400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/beton.css" />
+  <style>
+
+    /* ── HERO ── */
+    .home-hero {
+      position: relative;
+      /* svh = small viewport height — always the SMALLEST possible height
+         meaning it accounts for browser UI being fully visible.
+         Never recalculates when toolbar shows/hides. No jank. */
+      height: calc(100svh - var(--nav-height));
+      min-height: 500px;
+      overflow: hidden;
+      border-bottom: 0.5px solid var(--black-border);
+      display: flex;
+      align-items: flex-end;
+      justify-content: flex-start;
+    }
+    .home-hero-bg {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+    }
+    .home-hero-bg img,
+    .home-hero-bg video {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      object-position: center 40%;
+      filter: grayscale(100%) contrast(1.05) brightness(0.5);
+    }
+    /* Topo texture layer — sits on top of hero image, barely visible */
+    .home-hero-topo {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background-image: url('/images/topo-hero-bg.png');
+      background-size: cover;
+      background-position: center;
+      opacity: 0.05;
+    }
+    .home-hero-bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to top,
+        rgba(0,0,0,0.78) 0%,
+        rgba(0,0,0,0.15) 50%,
+        transparent 75%
+      );
+    }
+    .home-hero-title {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      padding: 0 2.5rem 3rem;
+    }
+    .hero-text {
+      font-family: 'Big Shoulders Inline Text', sans-serif;
+      font-weight: 900;
+      font-size: clamp(72px, 8.8vw, 128px);
+      line-height: 0.92;
+      color: #ffffff;
+      opacity: 0.88;
+      white-space: nowrap;
+      display: block;
+      letter-spacing: -1px;
+    }
+    .hero-text-jp {
+      font-family: 'Inter', sans-serif;
+      font-weight: 200;
+      font-size: clamp(36px, 6vw, 88px);
+      line-height: 1.1;
+      color: #ffffff;
+      display: block;
+      letter-spacing: 6px;
+    }
+    .hero-en-block { display: block; }
+    .hero-jp-block { display: none; }
+    body.lang-jp .hero-en-block { display: none; }
+    body.lang-jp .hero-jp-block { display: block; }
+
+    /* Above-fold descriptor */
+    .hero-descriptor {
+      font-family: 'Inter', sans-serif;
+      font-weight: 300;
+      font-size: 13px;
+      letter-spacing: 5px;
+      color: var(--white-dim);
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+      display: block;
+    }
+    .hero-descriptor .red-dash { color: var(--red); }
+
+    /* ── DIVIDER ── */
+    .home-divider {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 2.5rem;
+      border-bottom: 0.5px solid var(--black-border);
+      gap: 2rem;
+    }
+    .home-divider-text {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      letter-spacing: 4px;
+      color: var(--white-muted);
+      font-weight: 300;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .home-divider-line {
+      flex: 1;
+      height: 0.5px;
+      background: var(--black-border);
+      min-width: 20px;
+    }
+
+    /* ── STREET ── */
+    .street-block {
+      position: relative;
+      height: 70vh;
+      min-height: 420px;
+      overflow: hidden;
+      border-bottom: 0.5px solid var(--black-border);
+    }
+    .street-block img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      object-position: center 55%;
+      filter: grayscale(100%) contrast(1.1) brightness(0.35);
+      display: block;
+    }
+    .street-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 4rem 2.5rem 3.5rem;
+      background: linear-gradient(
+        to top,
+        rgba(0,0,0,0.85) 0%,
+        rgba(0,0,0,0.4) 40%,
+        transparent 70%
+      );
+    }
+    .street-title {
+      font-family: 'Big Shoulders Inline Text', sans-serif;
+      font-weight: 500;
+      font-size: clamp(38px, 5.4vw, 77px);
+      color: var(--white);
+      line-height: 1.0;
+      letter-spacing: 2px;
+      margin-bottom: 0.75rem;
+    }
+    .street-sub {
+      font-family: 'Inter', sans-serif;
+      font-size: 18px;
+      color: var(--white-dim);
+      letter-spacing: 0.5px;
+      line-height: 1.85;
+      font-weight: 300;
+      max-width: 440px;
+    }
+
+    /* ── FILMSTRIP ── */
+    .filmstrip-section {
+      border-bottom: 0.5px solid var(--black-border);
+      overflow: hidden;
+      position: relative;
+      background: var(--black);
+    }
+    .filmstrip-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 2.5rem;
+      border-bottom: 0.5px solid var(--black-border);
+    }
+    .filmstrip-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      letter-spacing: 5px;
+      color: var(--white-dim);
+      font-weight: 300;
+      text-transform: uppercase;
+    }
+    /* DRAG hint always red — stands out, feels like an affordance */
+    .filmstrip-hint {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      letter-spacing: 4px;
+      color: var(--red);
+      font-weight: 300;
+      opacity: 0.8;
+    }
+    .filmstrip-track {
+      display: flex;
+      overflow-x: auto;
+      overflow-y: hidden;
+      cursor: grab;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      user-select: none;
+    }
+    .filmstrip-track::-webkit-scrollbar { display: none; }
+    .filmstrip-track.is-dragging { cursor: grabbing; scroll-behavior: auto; }
+
+    .filmstrip-slide {
+      flex: 0 0 auto;
+      width: 38vw;
+      height: 58svh;
+      min-height: 320px;
+      position: relative;
+      overflow: hidden;
+      border-right: 0.5px solid var(--black-border);
+    }
+    .filmstrip-slide:last-child { border-right: none; }
+    .filmstrip-slide img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      object-position: center;
+      filter: grayscale(100%) contrast(1.15) brightness(0.75);
+      display: block;
+      transition: transform 0.6s ease, filter 0.4s ease;
+      pointer-events: none;
+    }
+    .filmstrip-slide:hover img {
+      transform: scale(1.04);
+      filter: grayscale(100%) contrast(1.2) brightness(0.85);
+    }
+    /* Caption — always visible, unified size */
+    .filmstrip-caption {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 2.5rem 1.75rem 1.5rem;
+      background: linear-gradient(to top, rgba(0,0,0,0.82) 0%, transparent 100%);
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      letter-spacing: 5px;
+      color: var(--white-muted);
+      font-weight: 300;
+      text-transform: uppercase;
+      transition: opacity 0.3s ease;
+    }
+
+    /* Progress bar */
+    .filmstrip-progress {
+      height: 1px;
+      background: var(--black-border);
+      position: relative;
+    }
+    .filmstrip-progress-bar {
+      position: absolute;
+      top: 0; left: 0;
+      height: 100%;
+      background: var(--red);
+      width: 25%;
+      transition: width 0.1s linear;
+    }
+
+    /* ── COLLECTION MARKER ── */
+    .collection-marker {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 2.5rem;
+      border-bottom: 0.5px solid var(--black-border);
+    }
+    .collection-marker-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      letter-spacing: 5px;
+      color: var(--white-muted);
+      font-weight: 300;
+      text-transform: uppercase;
+    }
+    .collection-marker-num {
+      font-family: 'Inter', sans-serif;
+      font-weight: 300;
+      font-size: 12px;
+      letter-spacing: 4px;
+      color: var(--white-faint);
+    }
+
+    /* ── OBJECT CARD ── */
+    .object-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-decoration: none;
+      color: inherit;
+      border-bottom: 0.5px solid var(--black-border);
+      padding: 5rem 2.5rem 4rem;
+      cursor: pointer;
+    }
+    .object-card-inner {
+      position: relative;
+      width: 42%;
+      max-width: 460px;
+      overflow: hidden;
+      margin-bottom: 2.5rem;
+    }
+    .object-card-inner img {
+      width: 100%;
+      display: block;
+      filter: grayscale(100%);
+      transition: transform 0.7s ease;
+    }
+    .object-card-tint {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0);
+      transition: background 0.4s ease;
+    }
+    .object-card:hover .object-card-tint { background: rgba(0,0,0,0.3); }
+    .object-card:hover .object-card-inner img { transform: scale(1.03); }
+    .object-card-label {
+      font-family: 'Big Shoulders Inline Text', sans-serif;
+      font-size: clamp(18px, 2vw, 26px);
+      letter-spacing: 6px;
+      color: var(--white-muted);
+      text-decoration: underline;
+      text-underline-offset: 8px;
+      text-decoration-color: var(--white-faint);
+      transition: color 0.3s ease;
+      text-align: center;
+      font-weight: 300;
+    }
+    .object-card:hover .object-card-label {
+      color: var(--white);
+      text-decoration-color: var(--white-muted);
+    }
+
+    /* ── MOBILE ── */
+    @media (max-width: 768px) {
+      .home-hero {
+        min-height: 500px;
+      }
+      .home-hero-title { padding: 0 1.5rem 2.5rem; }
+      .hero-text {
+        font-size: clamp(58px, 16vw, 90px);
+        white-space: normal;
+        line-height: 0.9;
+      }
+      .hero-text-jp {
+        font-size: clamp(28px, 9vw, 52px);
+        letter-spacing: 4px;
+      }
+
+      /* Divider — single line on mobile, no flex wrap ugliness */
+      .home-divider {
+        padding: 1rem 1.5rem;
+        gap: 0;
+      }
+      .home-divider-text:last-child { display: none; }
+      .home-divider-line { display: none; }
+
+      /* Street — fixed height on mobile, no vh to prevent resize jank */
+      .street-block { height: 480px; min-height: 380px; }
+      .street-overlay { padding: 2.5rem 1.5rem 2rem; }
+      .street-title {
+        font-size: clamp(32px, 9vw, 48px);
+        margin-bottom: 0.5rem;
+        text-align: left;
+      }
+      .street-sub {
+        font-size: 15px;
+        max-width: 100%;
+        line-height: 1.8;
+        text-align: left;
+      }
+
+      /* Filmstrip — taller slides, show ~1.4 at once */
+      .filmstrip-header { padding: 1rem 1.5rem; }
+      .filmstrip-slide {
+        width: 78vw;
+        height: 300px;
+        min-height: 260px;
+      }
+      .filmstrip-caption { opacity: 1; }
+
+      /* Markers */
+      .collection-marker { padding: 1rem 1.5rem; }
+
+      /* Product card */
+      .object-card { padding: 3.5rem 1.5rem 3rem; }
+      .object-card-inner { width: 86%; margin-bottom: 1.75rem; }
+      .object-card-label {
+        font-size: 20px;
+        letter-spacing: 5px;
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+      }
+    }
+
+    @media (max-width: 420px) {
+      .hero-text { font-size: clamp(50px, 15.5vw, 76px); }
+      .filmstrip-slide { width: 88vw; height: 260px; }
+      .object-card-inner { width: 94%; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="loader" id="loader">
+  <div class="loader-text">
+    <span class="loader-be">BE</span>
+    <span class="loader-slash">/</span>
+    <span class="loader-ton">TON</span>
+  </div>
+</div>
+
+<div id="betonNav"></div>
+
+<!-- HERO -->
+<div class="home-hero">
+  <div class="home-hero-bg">
+    <img src="/images/strata-top-hero.png" alt="BE/TON concrete object" loading="eager" />
+  </div>
+  <div class="home-hero-topo"></div>
+  <div class="home-hero-title">
+    <div class="hero-en-block">
+      <span class="hero-descriptor">BE/TON Studio <span class="red-dash">—</span> <span class="red-dash">Kyoto</span> <span class="red-dash">—</span> Est. 2026</span>
+      <span class="hero-text">GOOD TASTE</span>
+      <span class="hero-text">IS HEAVY.</span>
+    </div>
+    <div class="hero-jp-block">
+      <span class="hero-descriptor">コンクリートオブジェ — 手鋳造 — 京都</span>
+      <span class="hero-text-jp">本物は本来重い。</span>
+    </div>
+  </div>
+</div>
+
+<!-- DIVIDER -->
+<div class="home-divider fade-up">
+  <span class="home-divider-text">
+    <span data-lang="en">BE/TON Studio — 2026</span>
+    <span data-lang="jp">BE/TON スタジオ — 2026年</span>
+  </span>
+  <div class="home-divider-line"></div>
+  <span class="home-divider-text">
+    <span data-lang="en">Made in Kyoto. Unmistakably heavy.</span>
+    <span data-lang="jp">京都製。重さは本物。</span>
+  </span>
+</div>
+
+<!-- STREET -->
+<div class="street-block fade-up">
+  <img src="/images/street.png" alt="Kyoto street" loading="lazy" />
+  <div class="street-overlay">
+    <div class="street-title">
+      <span data-lang="en">Objects cast by hand in Kyoto.</span>
+      <span data-lang="jp">手で鋳造した<br>コンクリートオブジェ。</span>
+    </div>
+    <div class="street-sub">
+      <span data-lang="en">Each piece is shaped by the material itself.<br>No two are identical.</span>
+      <span data-lang="jp">それぞれの形は素材によって決まる。<br>二つとして同じものはない。</span>
+    </div>
+  </div>
+</div>
+
+<!-- FILMSTRIP — replace process-placeholder.jpg with real photos when ready -->
+<div class="filmstrip-section fade-up">
+  <div class="filmstrip-header">
+    <span class="filmstrip-label">
+      <span data-lang="en">Process</span>
+      <span data-lang="jp">制作過程</span>
+    </span>
+    <span class="filmstrip-hint">← drag →</span>
+  </div>
+  <div class="filmstrip-track" id="filmstrip">
+    <div class="filmstrip-slide">
+      <img src="/images/topo-filmstrip.png" alt="Surface" loading="lazy" />
+      <div class="filmstrip-caption">
+        <span data-lang="en">Surface</span>
+        <span data-lang="jp">表面</span>
+      </div>
+    </div>
+    <div class="filmstrip-slide">
+      <img src="/images/topo-filmstrip.png" alt="Cast" loading="lazy" />
+      <div class="filmstrip-caption">
+        <span data-lang="en">Cast</span>
+        <span data-lang="jp">鋳造</span>
+      </div>
+    </div>
+    <div class="filmstrip-slide">
+      <img src="/images/topo-filmstrip.png" alt="Form" loading="lazy" />
+      <div class="filmstrip-caption">
+        <span data-lang="en">Form</span>
+        <span data-lang="jp">形</span>
+      </div>
+    </div>
+    <div class="filmstrip-slide">
+      <img src="/images/topo-filmstrip.png" alt="Detail" loading="lazy" />
+      <div class="filmstrip-caption">
+        <span data-lang="en">Detail</span>
+        <span data-lang="jp">細部</span>
+      </div>
+    </div>
+    <div class="filmstrip-slide">
+      <img src="/images/topo-filmstrip.png" alt="Life" loading="lazy" />
+      <div class="filmstrip-caption">
+        <span data-lang="en">Life</span>
+        <span data-lang="jp">日常</span>
+      </div>
+    </div>
+  </div>
+  <div class="filmstrip-progress">
+    <div class="filmstrip-progress-bar" id="filmstripBar"></div>
+  </div>
+</div>
+
+<!-- COLLECTION MARKER -->
+<div class="collection-marker fade-up">
+  <span class="collection-marker-label">
+    <span data-lang="en">Collection</span>
+    <span data-lang="jp">コレクション</span>
+  </span>
+  <span class="collection-marker-num">01 / 01</span>
+</div>
+
+<!-- STRATA CARD -->
+<a class="object-card fade-up" href="/products/strata">
+  <div class="object-card-inner">
+    <img src="/images/strata-45.png" alt="STRATA concrete ashtray" loading="lazy" />
+    <div class="object-card-tint"></div>
+  </div>
+  <div class="object-card-label">
+    <span data-lang="en">VIEW OBJECT</span>
+    <span data-lang="jp">詳細を見る</span>
+  </div>
+</a>
+
+<!-- INSTAGRAM -->
+<a class="insta-bar fade-up" href="https://instagram.com/betonkyoto" target="_blank" rel="noopener">
+  <div class="insta-left">
+    <div class="insta-label">FOLLOW</div>
+    <div class="insta-handle">@betonkyoto</div>
+  </div>
+  <div class="insta-arrow">→</div>
+</a>
+
+<div id="betonFooter"></div>
+
+<script src="/js/beton.js"></script>
+<script>
+  // ── Filmstrip drag-to-scroll ──
+  (function() {
+    const track = document.getElementById('filmstrip');
+    const bar   = document.getElementById('filmstripBar');
+    if (!track) return;
+
+    const updateBar = () => {
+      const max = track.scrollWidth - track.clientWidth;
+      const pct = max > 0 ? (track.scrollLeft / max) * 75 + 25 : 25;
+      if (bar) bar.style.width = pct + '%';
+    };
+    track.addEventListener('scroll', updateBar, { passive: true });
+    updateBar();
+
+    let isDown = false, startX, scrollLeft;
+    track.addEventListener('mousedown', e => {
+      isDown = true;
+      track.classList.add('is-dragging');
+      startX = e.pageX - track.offsetLeft;
+      scrollLeft = track.scrollLeft;
+    });
+    document.addEventListener('mouseup', () => {
+      isDown = false;
+      track.classList.remove('is-dragging');
+    });
+    track.addEventListener('mousemove', e => {
+      if (!isDown) return;
+      e.preventDefault();
+      const x = e.pageX - track.offsetLeft;
+      track.scrollLeft = scrollLeft - (x - startX) * 1.4;
+    });
+    track.addEventListener('mouseleave', () => {
+      isDown = false;
+      track.classList.remove('is-dragging');
+    });
+  })();
+</script>
+
+<!-- JSON-LD: Product schema for Google -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": "STRATA Concrete Ashtray",
+  "description": "Handcast concrete ashtray made in Kyoto, Japan. Each piece is shaped by the material itself. No two are identical.",
+  "brand": {
+    "@type": "Brand",
+    "name": "BE/TON"
+  },
+  "offers": {
+    "@type": "Offer",
+    "price": "26000",
+    "priceCurrency": "JPY",
+    "availability": "https://schema.org/InStock",
+    "url": "https://betonkyoto.com/products/strata"
+  },
+  "image": "https://betonkyoto.com/images/strata-45.png"
+}
+</script>
+<script defer src="/_vercel/speed-insights/script.js"></script>
+</body>
+</html>

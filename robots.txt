@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /checkout
+Disallow: /success
+Disallow: /api/
+
+Sitemap: https://betonkyoto.com/sitemap.xml

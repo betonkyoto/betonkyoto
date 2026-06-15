@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Checkout — BE/TON Kyoto</title>
+  <meta name="robots" content="noindex" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="manifest" href="/images/site.webmanifest">
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@300;500;700;900&family=Big+Shoulders+Inline+Text:wght@300;500;700;900&family=Inter:wght@200;300;400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/beton.css" />
+  <script src="https://js.stripe.com/v3/"></script>
+  <style>
+    .checkout-wrap {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: calc(100vh - 60px);
+      border-bottom: 0.5px solid var(--black-border);
+    }
+    .checkout-summary {
+      padding: 4rem 3rem;
+      border-right: 0.5px solid var(--black-border);
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+    .checkout-label { font-size: var(--text-xs); letter-spacing: var(--ls-wide); color: var(--white-muted); }
+    .checkout-brand { font-family: 'Big Shoulders Display', 'Big Shoulders Inline Text', sans-serif; font-weight: 500; font-size: var(--text-h3); letter-spacing: 6px; color: var(--white); }
+    .checkout-items { display: flex; flex-direction: column; gap: 1.2rem; }
+    .checkout-item {
+      display: flex; gap: 1.5rem; align-items: center;
+      padding-bottom: 1.2rem; border-bottom: 0.5px solid var(--black-border);
+    }
+    .checkout-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .checkout-item-img { width: 72px; height: 72px; overflow: hidden; flex-shrink: 0; background: var(--black); }
+    .checkout-item-img img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%) contrast(1.1); }
+    .checkout-item-info { flex: 1; }
+    .checkout-item-name { font-size: var(--text-nav); letter-spacing: var(--ls-normal); color: var(--white); margin-bottom: 0.3rem; }
+    .checkout-item-qty { font-size: var(--text-xs); letter-spacing: var(--ls-tight); color: var(--white-muted); }
+    .checkout-item-price { font-size: var(--text-nav); letter-spacing: var(--ls-tight); color: var(--white-dim); }
+    .checkout-totals {
+      display: flex; flex-direction: column; gap: 0.6rem;
+      padding-top: 1.5rem; border-top: 0.5px solid var(--black-border); margin-top: auto;
+    }
+    .checkout-total-row { display: flex; justify-content: space-between; font-size: var(--text-sm); letter-spacing: var(--ls-tight); }
+    .checkout-total-row span:first-child { color: var(--white-muted); }
+    .checkout-total-row span:last-child { color: var(--white-dim); }
+    .checkout-total-row.grand span { color: var(--white); font-size: var(--text-base); letter-spacing: var(--ls-normal); }
+    .checkout-shipping-note { font-size: var(--text-xs); color: var(--white-muted); letter-spacing: var(--ls-tight); margin-top: 0.5rem; }
+    .checkout-form-side { padding: 4rem 3rem; display: flex; flex-direction: column; gap: 1.5rem; }
+    .checkout-form-title { font-size: var(--text-sm); letter-spacing: var(--ls-wide); color: var(--white-muted); }
+    .form-group { display: flex; flex-direction: column; gap: 0.5rem; }
+    .form-group label { font-size: var(--text-xs); letter-spacing: var(--ls-normal); color: var(--white-dim); }
+    .form-group input, .form-group select {
+      background: transparent; border: 0.5px solid var(--black-border-strong); border-radius: 0;
+      color: var(--white); font-family: 'Inter', sans-serif; font-size: var(--text-sm); font-weight: 300;
+      padding: 0.9rem 1rem; width: 100%; outline: none; transition: border-color 0.2s; -webkit-appearance: none;
+    }
+    .form-group input:focus, .form-group select:focus { border-color: var(--white-muted); }
+    .form-group input::placeholder { color: var(--white-faint); }
+    .form-group select option { background: #111; color: var(--white); }
+    /* RED ERROR STATE */
+    .form-group input.field-error { border-color: var(--red) !important; }
+    .form-group input.field-error::placeholder { color: var(--red); opacity: 0.6; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .stripe-field { background: transparent; border: 0.5px solid var(--black-border-strong); padding: 0.9rem 1rem; transition: border-color 0.2s; }
+    .form-section-label { font-size: var(--text-xs); letter-spacing: var(--ls-wide); color: var(--white-muted); padding-top: 1rem; border-top: 0.5px solid var(--black-border); }
+    .pay-btn {
+      width: 100%; padding: 1.1rem; background: var(--white); color: var(--black);
+      font-size: var(--text-nav); letter-spacing: var(--ls-normal); cursor: pointer; border: none;
+      font-family: 'Inter', sans-serif; font-weight: 300; transition: background 0.2s, color 0.2s; margin-top: 0.5rem;
+    }
+    .pay-btn:hover:not(:disabled) { background: var(--red); color: var(--white); }
+    .pay-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .pay-error { font-size: var(--text-xs); color: var(--red); letter-spacing: var(--ls-tight); min-height: 1.2rem; }
+    .pay-secure { font-size: var(--text-xs); letter-spacing: var(--ls-tight); color: var(--white-faint); text-align: center; }
+    .checkout-empty {
+      grid-column: 1 / -1; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; min-height: 60vh; gap: 1.5rem; text-align: center;
+    }
+    .checkout-empty-title { font-family: 'Inter', sans-serif; font-weight: 700; font-size: var(--text-h3); letter-spacing: var(--ls-normal); color: var(--white); }
+    .checkout-empty-sub { font-size: var(--text-sm); color: var(--white-muted); letter-spacing: var(--ls-tight); }
+    .checkout-empty-btn {
+      font-size: var(--text-nav); letter-spacing: var(--ls-normal); color: var(--white-dim);
+      border-bottom: 0.5px solid var(--white-faint); padding-bottom: 0.2rem;
+      transition: color 0.2s, border-color 0.2s; text-decoration: none;
+    }
+    .checkout-empty-btn:hover { color: var(--red); border-color: var(--red); }
+    @media (max-width: 768px) {
+      .checkout-wrap { grid-template-columns: 1fr; }
+      .checkout-summary {
+        border-right: none;
+        border-bottom: 0.5px solid var(--black-border);
+        padding: 2rem 1.5rem;
+      }
+      .checkout-form-side { padding: 2rem 1.5rem; }
+      .form-row { grid-template-columns: 1fr; }
+      .checkout-brand {
+        font-size: 32px;
+        letter-spacing: 4px;
+      }
+      .pay-btn {
+        font-size: 12px;
+        letter-spacing: 3px;
+        padding: 1.1rem;
+      }
+    }
+    @media (max-width: 420px) {
+      .checkout-summary { padding: 1.5rem 1rem; }
+      .checkout-form-side { padding: 1.5rem 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="betonNav"></div>
+
+<div class="checkout-wrap" id="checkoutWrap"></div>
+
+<div id="betonFooter"></div>
+
+<script src="/js/beton.js"></script>
+<script>
+  const PUBLISHABLE_KEY = 'pk_live_51TSIXl3HEWUl3OkKXUPzO9gmCoKnxVTaukUtR1xrxOMJrNTZxqpFrHSansy60UaS2J13HtHMj04T2oncGhIifs6G00kg4beUFW';
+  const stripe = Stripe(PUBLISHABLE_KEY);
+  let elements, paymentElement, currentPaymentIntentId;
+  let stripeInitialized = false; // prevent re-init on lang toggle
+
+  function isJP() { return document.body.classList.contains('lang-jp'); }
+
+  function validatePostal(postal) {
+    // Accept any postal/zip code that is at least 3 characters and contains letters or digits
+    return postal && postal.trim().length >= 3 && /[a-zA-Z0-9]/.test(postal);
+  }
+
+  function validateEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
+
+  function renderEmpty() {
+    const jp = isJP();
+    document.getElementById('checkoutWrap').innerHTML = `
+      <div class="checkout-empty">
+        <div class="checkout-empty-title">${jp ? 'カートは空です' : 'YOUR CART IS EMPTY'}</div>
+        <div class="checkout-empty-sub">${jp ? '商品を追加してください' : 'Add something heavy first.'}</div>
+        <a class="checkout-empty-btn" href="/shop">${jp ? 'ショップへ →' : '← BACK TO SHOP'}</a>
+      </div>
+    `;
+  }
+
+  const INTL_SHIPPING = 3500;
+
+  function getShipping(country) {
+    return country === 'JP' ? 0 : INTL_SHIPPING;
+  }
+
+  function renderCheckout() {
+    const jp = isJP();
+    const cartItems = cart.items;
+    const subtotal = cart.total;
+    const country = 'JP'; // default, updates dynamically
+    const shipping = getShipping(country);
+    const total = subtotal + shipping;
+
+    const itemsHTML = cartItems.map(i => `
+      <div class="checkout-item">
+        <div class="checkout-item-img"><img src="${i.img}" alt="${i.name}" /></div>
+        <div class="checkout-item-info">
+          <div class="checkout-item-name">${i.name}</div>
+          <div class="checkout-item-qty">${jp ? '数量' : 'QTY'}: ${i.qty}</div>
+        </div>
+        <div class="checkout-item-price">¥${(i.price * i.qty).toLocaleString()}</div>
+      </div>
+    `).join('');
+
+    document.getElementById('checkoutWrap').innerHTML = `
+      <div class="checkout-summary">
+        <div class="checkout-label">${jp ? '注文内容' : 'ORDER SUMMARY'}</div>
+        <div class="checkout-brand">BE<span class="logo-slash">/</span>TON</div>
+        <div class="checkout-items">${itemsHTML}</div>
+        <div class="checkout-totals">
+          <div class="checkout-total-row">
+            <span>${jp ? '送料' : 'SHIPPING'}</span>
+            <span id="shippingDisplay">${jp ? '無料' : 'Free'}</span>
+          </div>
+          <div class="checkout-total-row grand">
+            <span>${jp ? '合計' : 'TOTAL'}</span>
+            <span id="grandTotal">¥${subtotal.toLocaleString()}</span>
+          </div>
+          <div class="checkout-shipping-note" id="shippingNote">${jp ? '日本国内送料無料' : 'Free shipping within Japan'}</div>
+        </div>
+      </div>
+
+      <div class="checkout-form-side">
+        <div class="checkout-form-title">${jp ? 'お支払い情報' : 'PAYMENT DETAILS'}</div>
+        <div class="form-section-label">${jp ? '配送先' : 'SHIPPING'}</div>
+        <div class="form-group">
+          <label>${jp ? 'お名前' : 'FULL NAME'}</label>
+          <input type="text" id="fieldName" placeholder="${jp ? '山田 太郎' : 'Your name'}" />
+        </div>
+        <div class="form-group">
+          <label>${jp ? 'メールアドレス' : 'EMAIL'}</label>
+          <input type="email" id="fieldEmail" placeholder="your@email.com" />
+        </div>
+        <div class="form-group">
+          <label>${jp ? '住所' : 'ADDRESS'}</label>
+          <input type="text" id="fieldAddress" placeholder="${jp ? '東京都渋谷区...' : 'Street address'}" />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>${jp ? '市区町村' : 'CITY'}</label>
+            <input type="text" id="fieldCity" placeholder="${jp ? '京都市' : 'City'}" />
+          </div>
+          <div class="form-group">
+            <label>${jp ? '郵便番号' : 'POSTAL CODE'}</label>
+            <input type="text" id="fieldPostal" placeholder="000-0000" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>${jp ? '国' : 'COUNTRY'}</label>
+          <select id="fieldCountry">
+            <option value="JP">Japan / 日本</option>
+            <option value="KR">South Korea / 韓国</option>
+            <option value="CN">China / 中国</option>
+            <option value="TW">Taiwan / 台湾</option>
+            <option value="HK">Hong Kong / 香港</option>
+            <option value="SG">Singapore</option>
+            <option value="MY">Malaysia</option>
+            <option value="TH">Thailand</option>
+            <option value="ID">Indonesia</option>
+            <option value="PH">Philippines</option>
+            <option value="VN">Vietnam</option>
+            <option value="US">United States</option>
+            <option value="CA">Canada</option>
+            <option value="GB">United Kingdom</option>
+            <option value="AU">Australia</option>
+            <option value="NZ">New Zealand</option>
+            <option value="FR">France</option>
+            <option value="DE">Germany</option>
+            <option value="IT">Italy</option>
+            <option value="ES">Spain</option>
+            <option value="NL">Netherlands</option>
+            <option value="SE">Sweden</option>
+            <option value="NO">Norway</option>
+            <option value="DK">Denmark</option>
+            <option value="FI">Finland</option>
+            <option value="CH">Switzerland</option>
+            <option value="AT">Austria</option>
+            <option value="BE">Belgium</option>
+            <option value="PT">Portugal</option>
+            <option value="AE">UAE</option>
+            <option value="SA">Saudi Arabia</option>
+            <option value="BR">Brazil</option>
+            <option value="MX">Mexico</option>
+            <option value="ZA">South Africa</option>
+            <option value="IN">India</option>
+            <option value="RU">Russia</option>
+            <option value="PL">Poland</option>
+            <option value="CZ">Czech Republic</option>
+          </select>
+        </div>
+        <div class="form-section-label">${jp ? 'カード情報' : 'CARD'}</div>
+        <div class="form-group">
+          <label>${jp ? 'カード番号' : 'CARD DETAILS'}</label>
+          <div class="stripe-field" id="paymentElement"></div>
+        </div>
+        <div class="pay-error" id="payError"></div>
+        <button class="pay-btn" id="payBtn" disabled>${jp ? '読み込み中...' : 'LOADING...'}</button>
+        <div class="pay-secure">${jp ? '🔒 Stripe による安全な決済' : '🔒 Secured by Stripe'}</div>
+      </div>
+    `;
+
+    initStripe(subtotal, cartItems);
+
+    // Wire country selector to update shipping fee live
+    setTimeout(() => {
+      const countryEl = document.getElementById('fieldCountry');
+      if (countryEl) {
+        countryEl.addEventListener('change', () => updateShippingDisplay(subtotal));
+      }
+    }, 100);
+  }
+
+  // Only update visible labels when lang toggles — do NOT re-init Stripe
+  function updateLabelsForLang() {
+    const jp = isJP();
+    const els = {
+      label:        document.querySelector('.checkout-label'),
+      shippingNote: document.getElementById('shippingNote'),
+      shippingLbl:  document.querySelector('.form-section-label'),
+      secure:       document.querySelector('.pay-secure'),
+    };
+    if (!els.label) return; // not on checkout page
+
+    // Update shipping display text
+    const countryEl = document.getElementById('fieldCountry');
+    if (countryEl) updateShippingDisplay(cart.total);
+
+    // Update pay button text
+    const btn = document.getElementById('payBtn');
+    const displayTotal = window._currentTotal || cart.total;
+    if (btn && !btn.disabled) {
+      btn.textContent = jp ? `¥${displayTotal.toLocaleString()} — 購入する` : `PAY ¥${displayTotal.toLocaleString()}`;
+    }
+  }
+
+  function updateShippingDisplay(subtotal) {
+    const jp = isJP();
+    const countryEl = document.getElementById('fieldCountry');
+    const country = countryEl ? countryEl.value : 'JP';
+    const shipping = getShipping(country);
+    const total = subtotal + shipping;
+
+    const shippingDisplay = document.getElementById('shippingDisplay');
+    const grandTotal = document.getElementById('grandTotal');
+    const shippingNote = document.getElementById('shippingNote');
+    const btn = document.getElementById('payBtn');
+
+    if (shippingDisplay) shippingDisplay.textContent = shipping === 0 ? (jp ? '無料' : 'Free') : `¥${shipping.toLocaleString()}`;
+    if (grandTotal) grandTotal.textContent = `¥${total.toLocaleString()}`;
+    if (shippingNote) shippingNote.textContent = shipping === 0
+      ? (jp ? '日本国内送料無料' : 'Free shipping within Japan')
+      : (jp ? '国際配送 ¥3,500' : 'International shipping ¥3,500');
+    if (btn && !btn.disabled) btn.textContent = jp ? `¥${total.toLocaleString()} — 購入する` : `PAY ¥${total.toLocaleString()}`;
+
+    // Store current total for payment
+    window._currentTotal = total;
+    window._shippingUpdateOk = false; // reset
+
+    // Update Stripe payment intent with new amount
+    if (currentPaymentIntentId) {
+      fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          amount: total,
+          items: cart.items.map(i => ({ id: i.id, qty: i.qty })),
+          intentId: currentPaymentIntentId
+        })
+      })
+      .then(res => {
+        if (!res.ok) throw new Error('Update failed');
+        window._shippingUpdateOk = true;
+      })
+      .catch(() => {
+        // Show non-blocking warning — user can retry by changing country again
+        const errEl = document.getElementById('payError');
+        if (errEl) errEl.textContent = isJP()
+          ? '配送料の更新に失敗しました。もう一度国を選択してください。'
+          : 'Shipping update failed. Please re-select your country.';
+        window._shippingUpdateOk = false;
+      });
+    } else {
+      window._shippingUpdateOk = true;
+    }
+  }
+
+  async function initStripe(subtotal, cartItems) {
+    window._currentTotal = subtotal; // JP default, no shipping
+    try {
+      const res = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          amount: subtotal,
+          items: cartItems.map(i => ({ id: i.id, qty: i.qty }))
+        })
+      });
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+
+      const appearance = {
+        theme: 'night',
+        variables: {
+          colorPrimary: '#E34234', colorBackground: '#000000', colorText: '#f5f0e8',
+          colorDanger: '#E34234', fontFamily: 'Inter, sans-serif', fontSizeBase: '13px',
+          spacingUnit: '4px', borderRadius: '0px', colorTextPlaceholder: '#4a4240', colorIcon: '#b0a090',
+        },
+        rules: {
+          '.Input': { border: '0.5px solid #1a1a1a', backgroundColor: '#000000', color: '#f5f0e8', padding: '12px' },
+          '.Input:focus': { border: '0.5px solid #888078', boxShadow: 'none' },
+          '.Label': { color: '#888078', fontSize: '11px', letterSpacing: '3px', textTransform: 'uppercase', marginBottom: '6px' },
+          '.Tab': { border: '0.5px solid #1a1a1a', backgroundColor: '#000000' },
+          '.Tab:hover': { backgroundColor: '#111111' },
+          '.Tab--selected': { border: '0.5px solid #E34234' },
+          '.Error': { color: '#E34234' },
+        }
+      };
+
+      currentPaymentIntentId = data.paymentIntentId;
+      window._shippingUpdateOk = true; // initial JP amount is always valid
+
+      elements = stripe.elements({ clientSecret: data.clientSecret, appearance });
+      paymentElement = elements.create('payment', {
+        layout: { type: 'tabs', defaultCollapsed: false },
+        wallets: { applePay: 'never', googlePay: 'never', link: 'never' }
+      });
+      paymentElement.mount('#paymentElement');
+
+      const btn = document.getElementById('payBtn');
+      if (btn) {
+        btn.disabled = false;
+        const displayTotal = window._currentTotal || subtotal;
+        btn.textContent = isJP() ? `¥${displayTotal.toLocaleString()} — 購入する` : `PAY ¥${displayTotal.toLocaleString()}`;
+        btn.addEventListener('click', handlePayment);
+      }
+
+    } catch (err) {
+      console.error(err);
+      const errEl = document.getElementById('payError');
+      if (errEl) errEl.textContent = isJP() ? 'エラーが発生しました。再度お試しください。' : 'Something went wrong. Please try again.';
+    }
+  }
+
+  // ── VALIDATION — red highlight empty fields ──────────────────
+  function validateFields(fields) {
+    let valid = true;
+    fields.forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      if (!el.value?.trim()) {
+        el.classList.add('field-error');
+        valid = false;
+      } else {
+        el.classList.remove('field-error');
+      }
+      // Remove red border as soon as user starts typing
+      el.addEventListener('input', () => el.classList.remove('field-error'), { once: true });
+    });
+    return valid;
+  }
+
+  async function handlePayment() {
+    const btn = document.getElementById('payBtn');
+    const errEl = document.getElementById('payError');
+    const jp = isJP();
+
+    errEl.textContent = '';
+
+    // Block if shipping update is still pending or failed
+    if (!window._shippingUpdateOk) {
+      errEl.textContent = jp
+        ? '配送料を確認中です。もう一度国を選択してください。'
+        : 'Please re-select your country to confirm shipping.';
+      return;
+    }
+
+    // Validate — highlight empty fields red
+    const requiredFields = ['fieldName', 'fieldEmail', 'fieldAddress', 'fieldCity', 'fieldPostal'];
+    if (!validateFields(requiredFields)) {
+      errEl.textContent = jp ? 'すべての項目を入力してください。' : 'Please fill in all fields.';
+      return;
+    }
+
+    const name    = document.getElementById('fieldName').value.trim();
+    const email   = document.getElementById('fieldEmail').value.trim();
+    const address = document.getElementById('fieldAddress').value.trim();
+    const city    = document.getElementById('fieldCity').value.trim();
+    const postal  = document.getElementById('fieldPostal').value.trim();
+    const country = document.getElementById('fieldCountry').value;
+
+    // Email format check
+    if (!validateEmail(email)) {
+      const emailEl = document.getElementById('fieldEmail');
+      emailEl.classList.add('field-error');
+      errEl.textContent = jp ? '有効なメールアドレスを入力してください。' : 'Please enter a valid email address.';
+      return;
+    }
+
+    // Postal code check - international friendly
+    if (!validatePostal(postal)) {
+      const postalEl = document.getElementById('fieldPostal');
+      postalEl.classList.add('field-error');
+      errEl.textContent = jp ? '有効な郵便番号を入力してください。' : 'Please enter a valid postal code.';
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = jp ? '処理中...' : 'PROCESSING...';
+
+    const finalTotal = window._currentTotal || cart.total;
+
+    // Update intent with customer info and final confirmed amount
+    // If this fails we must NOT proceed — wrong amount could be charged
+    try {
+      const updateRes = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          amount: finalTotal,
+          items: cart.items.map(i => ({ id: i.id, qty: i.qty })),
+          customer: { name, email, address, city, postal, country },
+          intentId: currentPaymentIntentId
+        })
+      });
+      if (!updateRes.ok) {
+        throw new Error('Intent update failed');
+      }
+    } catch(e) {
+      errEl.textContent = jp
+        ? 'エラーが発生しました。再度お試しください。'
+        : 'Something went wrong. Please try again.';
+      btn.disabled = false;
+      const displayTotal = window._currentTotal || cart.total;
+      btn.textContent = jp ? `¥${displayTotal.toLocaleString()} — 購入する` : `PAY ¥${displayTotal.toLocaleString()}`;
+      return; // STOP — do not proceed to confirmPayment
+    }
+
+    const { error } = await stripe.confirmPayment({
+      elements,
+      confirmParams: {
+        return_url: `${window.location.origin}/success`,
+        payment_method_data: {
+          billing_details: {
+            name, email,
+            address: { line1: address, city, postal_code: postal, country }
+          }
+        }
+      }
+    });
+
+    if (error) {
+      errEl.textContent = error.message;
+      btn.disabled = false;
+      const displayTotal = window._currentTotal || cart.total;
+      btn.textContent = jp ? `¥${displayTotal.toLocaleString()} — 購入する` : `PAY ¥${displayTotal.toLocaleString()}`;
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    if (cart.items.length === 0) renderEmpty();
+    else renderCheckout();
+
+    // On lang toggle — only update labels, never re-init Stripe
+    document.addEventListener('beton:langchange', () => {
+      if (cart.items.length === 0) renderEmpty();
+      else updateLabelsForLang();
+    });
+  });
+</script>
+<script defer src="/_vercel/speed-insights/script.js"></script> 
+</body>
+</html>
