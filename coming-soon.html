@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BE/TON — Coming Soon</title>
+  <meta name="description" content="BE/TON Studio — Kyoto. Coming soon." />
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@300;500&family=Big+Shoulders+Inline+Text:wght@300;900&family=Inter:wght@200;300&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black: #050505;
+      --white: #ffffff;
+      --white-dim: #e8e5e0;
+      --white-muted: #c0bcb8;
+      --white-faint: #9a9290;
+      --red: #8B1A1A;
+      --border: #1a1a1a;
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--black);
+      color: var(--white);
+      font-family: 'Inter', sans-serif;
+      font-weight: 200;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100dvh;
+    }
+
+    /* ── TOP BAR ── */
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.5rem 2.5rem;
+      border-bottom: 0.5px solid var(--border);
+    }
+
+    .logo {
+      font-family: 'Big Shoulders Display', sans-serif;
+      font-weight: 500;
+      font-size: 22px;
+      letter-spacing: 7px;
+      color: var(--white);
+      text-decoration: none;
+    }
+    .logo-slash { color: var(--red); }
+
+    .top-bar-label {
+      font-size: 11px;
+      letter-spacing: 5px;
+      color: var(--white-faint);
+      text-transform: uppercase;
+    }
+
+    /* ── MAIN ── */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: flex-end;
+      padding: 0 2.5rem 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* subtle topographic texture */
+    .main::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url('/images/topo-hero-bg.png');
+      background-size: cover;
+      background-position: center;
+      opacity: 0.04;
+      pointer-events: none;
+    }
+
+    .descriptor {
+      font-size: 12px;
+      letter-spacing: 5px;
+      color: var(--white-faint);
+      text-transform: uppercase;
+      margin-bottom: 1.25rem;
+      position: relative;
+    }
+    .descriptor .red { color: var(--red); }
+
+    .headline {
+      font-family: 'Big Shoulders Inline Text', sans-serif;
+      font-weight: 900;
+      font-size: clamp(64px, 10vw, 140px);
+      line-height: 0.92;
+      color: var(--white);
+      opacity: 0.88;
+      letter-spacing: -1px;
+      position: relative;
+      margin-bottom: 2.5rem;
+    }
+
+    .sub {
+      font-size: 14px;
+      letter-spacing: 2px;
+      color: var(--white-muted);
+      line-height: 1.9;
+      max-width: 380px;
+      position: relative;
+    }
+
+    /* ── BOTTOM BAR ── */
+    .bottom-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 2.5rem;
+      border-top: 0.5px solid var(--border);
+    }
+
+    .bottom-left {
+      font-size: 11px;
+      letter-spacing: 4px;
+      color: var(--white-faint);
+      text-transform: uppercase;
+    }
+
+    .insta-link {
+      font-size: 11px;
+      letter-spacing: 4px;
+      color: var(--white-faint);
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .insta-link:hover { color: var(--white); }
+
+    /* ── MOBILE ── */
+    @media (max-width: 768px) {
+      .top-bar { padding: 1.25rem 1.5rem; }
+      .logo { font-size: 20px; letter-spacing: 6px; }
+      .top-bar-label { display: none; }
+      .main { padding: 0 1.5rem 3rem; }
+      .headline { font-size: clamp(56px, 16vw, 90px); margin-bottom: 2rem; }
+      .sub { font-size: 13px; max-width: 100%; }
+      .bottom-bar { padding: 1rem 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="top-bar">
+    <span class="logo">BE<span class="logo-slash">/</span>TON</span>
+    <span class="top-bar-label">Kyoto — Est. 2026</span>
+  </div>
+
+  <main class="main">
+    <div class="descriptor">
+      BE/TON Studio <span class="red">—</span> <span class="red">Kyoto</span> <span class="red">—</span> Est. 2026
+    </div>
+    <div class="headline">
+      SOMETHING<br>HEAVY<br>IS COMING.
+    </div>
+    <div class="sub">
+      Handcast objects from Kyoto.<br>
+      Back soon.
+    </div>
+  </main>
+
+  <div class="bottom-bar">
+    <span class="bottom-left">betonkyoto.com</span>
+    <a class="insta-link" href="https://instagram.com/betonkyoto" target="_blank" rel="noopener">
+      @betonkyoto →
+    </a>
+  </div>
+
+</body>
+</html>
