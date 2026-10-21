@@ -1,99 +1,59 @@
 {
   "cleanUrls": true,
   "trailingSlash": false,
+
   "redirects": [
     {
       "source": "/:path*",
       "has": [{ "type": "host", "value": "www.betonkyoto.com" }],
       "destination": "https://betonkyoto.com/:path*",
       "permanent": true
+    },
+    {
+      "source": "/coming-soon",
+      "destination": "/coming-soon.html",
+      "permanent": false
     }
   ],
+
   "rewrites": [
     {
-      "source": "/products/:path*",
-      "destination": "/products/:path*"
+      "source": "/",
+      "destination": "/coming-soon.html"
     },
     {
       "source": "/shop",
-      "destination": "/shop.html"
+      "destination": "/coming-soon.html"
     },
     {
       "source": "/about",
-      "destination": "/about.html"
-    },
-    {
-      "source": "/checkout",
-      "destination": "/checkout.html"
-    },
-    {
-      "source": "/success",
-      "destination": "/success.html"
+      "destination": "/coming-soon.html"
     },
     {
       "source": "/products/strata",
-      "destination": "/products/strata.html"
-    },
-    {
-      "source": "/products/coming",
-      "destination": "/products/coming.html"
+      "destination": "/coming-soon.html"
     },
     {
       "source": "/policy",
-      "destination": "/policy.html"
+      "destination": "/coming-soon.html"
     }
   ],
+
   "headers": [
-    {
-      "source": "/css/(.*)",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=0, must-revalidate"
-        }
-      ]
-    },
-    {
-      "source": "/js/(.*)",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=0, must-revalidate"
-        }
-      ]
-    },
-    {
-      "source": "/images/(.*)",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
-        }
-      ]
-    },
     {
       "source": "/(.*)",
       "headers": [
-        {
-          "key": "X-Content-Type-Options",
-          "value": "nosniff"
-        },
-        {
-          "key": "X-Frame-Options",
-          "value": "DENY"
-        },
-        {
-          "key": "X-XSS-Protection",
-          "value": "1; mode=block"
-        },
-        {
-          "key": "Referrer-Policy",
-          "value": "strict-origin-when-cross-origin"
-        },
-        {
-          "key": "Permissions-Policy",
-          "value": "camera=(), microphone=(), geolocation=()"
-        }
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "X-XSS-Protection", "value": "1; mode=block" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()" }
+      ]
+    },
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-store" }
       ]
     }
   ]
